@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>依赖台账与版本核查平台</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>依赖台账与版本核查平台</h1>
+      <p class="subtitle">按项目登记用到的依赖、版本、许可与责任人，同一个依赖在不同项目里的版本一眼能比出来</p>
+    </div>
+    <div class="topbar-right">
+      <label class="operator" data-field="operator">当前操作者
+        <input id="operator" placeholder="填上你的名字" maxlength="40">
+      </label>
+      <div class="health" id="health">连接中…</div>
+    </div>
+  </header>
+
+  <div class="notice hidden" id="notice"></div>
+
+  <main>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>项目</h2>
+        <div class="panel-tip">项目下面还挂着依赖登记时不允许直接删除</div>
+      </div>
+      <div class="table-wrap">
+        <table class="grid">
+          <thead>
+            <tr>
+              <th>项目名称</th>
+              <th>负责人</th>
+              <th>说明</th>
+              <th>依赖条数</th>
+              <th>登记时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="project-body"></tbody>
+        </table>
+      </div>
+      <p class="empty-tip hidden" id="project-empty">还没有登记任何项目</p>
+
+      <form class="inline-form" id="project-form" autocomplete="off">
+        <h3>新增项目</h3>
+        <label data-field="projectName">项目名称<input id="project-name" placeholder="例如 风控服务" maxlength="40"></label>
+        <label data-field="projectOwner">负责人<input id="project-owner" placeholder="例如 张三" maxlength="40"></label>
+        <label data-field="projectNote">说明<input id="project-note" placeholder="这个项目是做什么的" maxlength="200"></label>
+        <button type="submit">新增项目</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>依赖登记</h2>
+        <div class="filters">
+          <select id="filter-project"><option value="">全部项目</option></select>
+          <select id="filter-status"><option value="">全部状态</option></select>
+          <select id="filter-license"><option value="">全部许可</option></select>
+          <input id="filter-keyword" placeholder="搜索依赖名、责任人、备注" maxlength="60">
+          <button type="button" id="filter-apply">筛选</button>
+          <button type="button" id="filter-reset" class="ghost">重置</button>
+          <button type="button" id="dep-refresh" class="ghost">刷新</button>
+          <button type="button" id="dep-new">新建登记</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="grid">
+          <thead>
+            <tr>
+              <th>项目</th>
+              <th>依赖名称</th>
+              <th>版本</th>
+              <th>许可</th>
+              <th>责任人</th>
+              <th>状态</th>
+              <th>备注</th>
+              <th>更新时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="dep-body"></tbody>
+        </table>
+      </div>
+      <p class="empty-tip hidden" id="dep-empty">当前筛选条件下没有依赖登记</p>
+
+      <form class="dep-form hidden" id="dep-form" autocomplete="off">
+        <h3 id="dep-form-title">新建登记</h3>
+        <div class="form-row">
+          <label data-field="projectId">所属项目
+            <select id="dep-project"></select>
+          </label>
+          <label data-field="depName">依赖名称<input id="dep-name" placeholder="例如 spring-boot" maxlength="60"></label>
+          <label data-field="version">版本<input id="dep-version" placeholder="例如 2.7.18" maxlength="40"></label>
+        </div>
+        <div class="form-row">
+          <label data-field="license">许可<input id="dep-license" placeholder="例如 MIT，还没确认可以留空" maxlength="40"></label>
+          <label data-field="owner">责任人<input id="dep-owner" placeholder="留空表示还没定人" maxlength="40"></label>
+          <label data-field="status">状态
+            <select id="dep-status"></select>
+          </label>
+        </div>
+        <label class="full" data-field="note">备注<input id="dep-note" placeholder="为什么用这个版本、有没有待办" maxlength="200"></label>
+        <div class="form-actions">
+          <button type="submit">保存</button>
+          <button type="button" id="dep-cancel" class="ghost">取消</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
