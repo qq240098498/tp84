@@ -341,3 +341,123 @@ label.full input {
   display: flex;
   gap: 10px;
 }
+
+/* 勾选框不需要文本框的内边距 */
+input[type="checkbox"] {
+  padding: 0;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* 责任人分组视图 */
+.owners-grid {
+  min-width: 600px;
+}
+
+tr.unassigned-row td {
+  background: #fafbfc;
+}
+
+tr.total-row td {
+  background: #f9fafc;
+  font-weight: 600;
+}
+
+tr.owner-detail td,
+tr.transfer-detail td {
+  background: #fbfcfe;
+  padding: 10px 14px;
+  white-space: normal;
+}
+
+table.sub-grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.sub-grid th,
+table.sub-grid td {
+  padding: 6px 8px;
+  border-bottom: 1px dashed var(--line);
+  text-align: left;
+  font-size: 12.5px;
+}
+
+table.sub-grid th {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* 批量转交操作条 */
+.transfer-bar {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.transfer-bar h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  align-self: center;
+}
+
+.transfer-count {
+  align-self: center;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.transfer-bar .panel-tip {
+  align-self: center;
+}
+
+label.unassign-toggle {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  align-self: center;
+  white-space: nowrap;
+}
+
+/* 转交预演结果 */
+.transfer-preview {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--warn-line);
+  border-radius: 6px;
+  background: var(--warn-bg);
+}
+
+.transfer-preview h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.transfer-preview p {
+  margin: 0 0 8px;
+}
+
+.transfer-preview ul {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+
+.transfer-counts {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+/* 转交记录明细 */
+.transfer-items {
+  margin: 0;
+  padding-left: 20px;
+}

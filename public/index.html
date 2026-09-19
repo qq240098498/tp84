@@ -111,6 +111,61 @@
         </div>
       </form>
     </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>责任人</h2>
+        <div class="panel-tip">按责任人统计名下的依赖条数，没写责任人的单独归在未指定一组，展开能看到具体是哪些项目的哪些依赖</div>
+      </div>
+      <div class="table-wrap">
+        <table class="grid owners-grid">
+          <thead>
+            <tr>
+              <th>责任人</th>
+              <th>条数</th>
+              <th>明细</th>
+            </tr>
+          </thead>
+          <tbody id="owner-body"></tbody>
+        </table>
+      </div>
+      <p class="empty-tip hidden" id="owner-empty">还没有任何依赖登记</p>
+
+      <div class="transfer-bar">
+        <h3>批量转交</h3>
+        <span class="transfer-count" id="transfer-count">已选 0 条</span>
+        <label data-field="toOwner">新责任人
+          <input id="transfer-to" list="owner-options" placeholder="要转给谁" maxlength="40">
+        </label>
+        <datalist id="owner-options"></datalist>
+        <label class="unassign-toggle"><input type="checkbox" id="transfer-unassign">撤掉责任人（回到未指定一组）</label>
+        <button type="button" id="transfer-preview">预演</button>
+        <span class="panel-tip">操作者取顶栏填的名字，转交会留下记录</span>
+      </div>
+      <div class="transfer-preview hidden" id="transfer-preview-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>转交记录</h2>
+        <div class="panel-tip">每次转交都留痕：什么时候、由谁、把哪些登记转给了谁，展开能看到每一条的原责任人</div>
+      </div>
+      <div class="table-wrap">
+        <table class="grid">
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>操作者</th>
+              <th>新责任人</th>
+              <th>条数</th>
+              <th>明细</th>
+            </tr>
+          </thead>
+          <tbody id="transfer-body"></tbody>
+        </table>
+      </div>
+      <p class="empty-tip hidden" id="transfer-empty">还没有转交记录</p>
+    </section>
   </main>
 
   <script src="app.js"></script>

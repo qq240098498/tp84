@@ -43,6 +43,7 @@ function seedData() {
       { id: 'dep-2017', projectId: 'proj-1003', name: 'vite', version: '5.0.10', license: 'MIT', owner: '王凯', status: '在用', note: '本地构建', createdAt: '2026-08-28T04:12:00.000Z', updatedAt: '2026-09-08T07:42:00.000Z' },
       { id: 'dep-2018', projectId: 'proj-1003', name: 'xml-parser', version: '0.9.2', license: 'GPL-3.0', owner: '', status: '在用', note: '解析对账文件用，许可需要复核', createdAt: '2026-09-01T02:00:00.000Z', updatedAt: '2026-09-08T07:50:00.000Z' },
     ],
+    transfers: [],
   };
 }
 
@@ -78,7 +79,36 @@ function normalizeDep(item, fallbackIndex) {
   };
 }
 
-// 整份数据保证 projects 与 deps 结构一致，指向不存在项目的登记一律丢掉
+// 转交记录里的每一条明细：登记以后可能被删掉，这里把项目名与依赖名当时的样子留下来
+function normalizeTransferItem(item) {
+  const source = item && typeof item === 'object' ? item : {};
+  const depId = typeof source.depId === 'string' ? source.depId : '';
+  const name = typeof source.name === 'string' ? source.name : '';
+  if (!depId || !name) return null;
+  return {
+    depId,
+    projectId: typeof source.projectId === 'string' ? source.projectId : '',
+    projectName: typeof source.projectName === 'string' ? source.projectName : '',
+    name,
+    fromOwner: typeof source.fromOwner === 'string' ? source.fromOwner : '',
+  };
+}
+
+// 一次转交的痕迹：什么时候、由谁、转给了谁（空表示撤掉责任人）、动了哪些登记
+function normalizeTransfer(item, fallbackIndex) {
+  const source = item && typeof item === 'object' ? item : {};
+  const items = Array.isArray(source.items) ? source.items.map(normalizeTransferItem).filter(Boolean) : [];
+  if (!items.length) return null;
+  return {
+    id: typeof source.id === 'string' && source.id ? source.id : `transfer-restored-${fallbackIndex + 1}`,
+    at: typeof source.at === 'string' && source.at ? source.at : new Date().toISOString(),
+    operator: typeof source.operator === 'string' ? source.operator : '',
+    toOwner: typeof source.toOwner === 'string' ? source.toOwner : '',
+    items,
+  };
+}
+
+// 整份数据保证 projects、deps 与 transfers 结构一致，指向不存在项目的登记一律丢掉
 function normalize(raw) {
   const source = raw && typeof raw === 'object' ? raw : {};
   const seed = seedData();
@@ -106,7 +136,12 @@ function normalize(raw) {
         .filter((item) => known.has(item.projectId))
     : [];
 
-  return { projects: dedupedProjects, deps };
+  // 转交记录是历史痕迹，登记后来删掉也不影响，整批保留
+  const transfers = Array.isArray(source.transfers)
+    ? source.transfers.map((item, index) => normalizeTransfer(item, index)).filter(Boolean)
+    : [];
+
+  return { projects: dedupedProjects, deps, transfers };
 }
 
 // 读取数据文件：文件缺失或内容损坏时回落到初始数据并立刻补写
@@ -136,6 +171,7 @@ module.exports = {
   normalize,
   normalizeProject,
   normalizeDep,
+  normalizeTransfer,
   STATUSES,
   UNASSIGNED,
   MAX_NAME_LENGTH,
