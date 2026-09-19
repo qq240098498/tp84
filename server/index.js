@@ -84,6 +84,34 @@ app.delete('/api/deps/:id', (req, res) => {
   }
 });
 
+// 按责任人汇总：每个人名下条数与明细，空责任人单独成“未指定”一组
+app.get('/api/owners', (_req, res) => {
+  res.json(api.listOwners());
+});
+
+// 批量转交预演：只算会改哪些登记、转交前后各责任人的条数，不写任何数据
+app.post('/api/transfers/preview', (req, res) => {
+  try {
+    res.json(api.previewTransfer(req.body));
+  } catch (err) {
+    sendError(res, err);
+  }
+});
+
+// 执行批量转交：改责任人并留下转交记录
+app.post('/api/transfers', (req, res) => {
+  try {
+    res.status(201).json(api.executeTransfer(req.body));
+  } catch (err) {
+    sendError(res, err);
+  }
+});
+
+// 转交记录：按批次倒序，看得出什么时候、由谁、把哪些登记转给了谁
+app.get('/api/transfers', (req, res) => {
+  res.json(api.listTransfers({ limit: api.readQuery(req.query, 'limit') }));
+});
+
 // 未匹配到的接口路径统一返回说明，避免前端拿到一串页面内容
 app.use('/api', (_req, res) => {
   res.status(404).json({ error: { code: 'API_NOT_FOUND', message: '接口不存在', field: '' } });

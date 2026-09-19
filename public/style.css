@@ -341,3 +341,265 @@ label.full input {
   display: flex;
   gap: 10px;
 }
+
+/* ---------- 责任人分组与批量转交 ---------- */
+
+.transfer-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f9fafc;
+}
+
+.transfer-bar label {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.transfer-bar input {
+  width: 220px;
+}
+
+.transfer-selected {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.transfer-selected strong {
+  color: var(--accent);
+  font-size: 15px;
+}
+
+.owner-group {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.owner-group.unassigned {
+  border-style: dashed;
+  background: #fbfcfe;
+}
+
+.group-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #f9fafc;
+}
+
+.owner-group.unassigned .group-head {
+  background: #f6f8fb;
+}
+
+.group-check {
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+}
+
+.group-caret {
+  padding: 0 2px;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.group-name {
+  font-weight: 600;
+}
+
+.owner-group.unassigned .group-name .missing {
+  font-weight: 600;
+}
+
+.group-count {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+.group-selected {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.group-body {
+  padding: 4px 12px 10px;
+  overflow-x: auto;
+}
+
+.inner-grid {
+  min-width: 0;
+}
+
+.inner-grid th,
+.inner-grid td {
+  padding: 6px 8px;
+}
+
+.check-col {
+  width: 34px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.check-col input {
+  padding: 0;
+}
+
+/* ---------- 转交预演弹层 ---------- */
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 41, 51, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  z-index: 20;
+  overflow-y: auto;
+}
+
+.modal {
+  width: 100%;
+  max-width: 860px;
+  background: var(--panel);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  padding: 16px 18px;
+  box-shadow: 0 12px 40px rgba(31, 41, 51, 0.2);
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.modal-head h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.preview-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.preview-summary.warn {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+}
+
+.preview-h {
+  margin: 14px 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.preview-note {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+.preview-items {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.preview-items .inner-grid {
+  border: none;
+}
+
+.skip-row {
+  color: #a6b0bb;
+}
+
+.delta.up {
+  color: var(--ok);
+  font-weight: 600;
+}
+
+.delta.down {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.preview-reason {
+  margin-top: 12px;
+}
+
+.preview-reason input {
+  width: 100%;
+}
+
+/* ---------- 转交记录 ---------- */
+
+.log-batch {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.log-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f9fafc;
+  font-size: 13px;
+}
+
+.log-time {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+.log-target {
+  font-weight: 600;
+}
+
+.log-reason {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.log-body {
+  padding: 4px 12px 10px;
+  overflow-x: auto;
+}

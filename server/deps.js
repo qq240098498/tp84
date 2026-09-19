@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { load, save, STATUSES, MAX_NAME_LENGTH, MAX_VERSION_LENGTH, MAX_LICENSE_LENGTH, MAX_OWNER_LENGTH, MAX_NOTE_LENGTH } = require('./store');
 const { ApiError, pickText } = require('./errors');
 const { findProject } = require('./projects');
+const transfers = require('./transfers');
 
 // 依赖名允许小写字母、数字、点、下划线、短横线，也允许带范围的写法
 const NAME_PATTERN = /^[@a-z0-9][@a-z0-9._/-]*$/;
@@ -156,9 +157,18 @@ function updateDep(id, payload) {
   found.name = name;
   found.version = input.version === undefined ? found.version : validateVersion(input.version);
   found.license = input.license === undefined ? found.license : validateLicense(input.license);
-  found.owner = input.owner === undefined ? found.owner : validateOwner(input.owner);
+  const nextOwner = input.owner === undefined ? found.owner : validateOwner(input.owner);
   found.status = input.status === undefined ? found.status : validateStatus(input.status);
   found.note = input.note === undefined ? found.note : validateNote(input.note);
+
+  // 责任人发生变化（含改成空、即撤掉责任人）同样按转交留痕；操作者没填不拦编辑，只影响记录里的署名
+  const previousOwner = found.owner || '';
+  if (nextOwner !== previousOwner) {
+    const operator = validateOwner(input.operator);
+    transfers.recordSingleOwnerChange(data, found, previousOwner, nextOwner, operator);
+    found.owner = nextOwner;
+  }
+
   found.updatedAt = new Date().toISOString();
   save(data);
   return found;

@@ -56,6 +56,27 @@
 
     <section class="panel">
       <div class="panel-head">
+        <h2>责任人</h2>
+        <div class="filters">
+          <button type="button" id="owner-refresh" class="ghost">刷新</button>
+        </div>
+      </div>
+      <p class="panel-tip">按责任人汇总名下依赖条数，展开能看到具体是哪些项目的哪些依赖；没写责任人的单独归在「未指定」一组，不会混到任何人名下。</p>
+
+      <div class="transfer-bar" id="transfer-bar">
+        <label data-field="toOwner">转交给
+          <input id="transfer-owner" placeholder="新责任人名字；留空表示撤掉责任人" maxlength="40">
+        </label>
+        <div class="transfer-selected">已选 <strong id="transfer-count">0</strong> 条</div>
+        <button type="button" id="transfer-clear" class="ghost">清空选择</button>
+        <button type="button" id="transfer-preview-btn">预演转交</button>
+      </div>
+      <p class="empty-tip hidden" id="owner-empty">还没有任何依赖登记</p>
+      <div id="owner-groups"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
         <h2>依赖登记</h2>
         <div class="filters">
           <select id="filter-project"><option value="">全部项目</option></select>
@@ -111,7 +132,33 @@
         </div>
       </form>
     </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>转交记录</h2>
+        <div class="filters">
+          <button type="button" id="transfer-log-refresh" class="ghost">刷新</button>
+        </div>
+      </div>
+      <p class="panel-tip">每一次转交都留痕：什么时候、由谁、把哪些登记从谁转给了谁。撤掉责任人的记录显示为转给「未指定」。</p>
+      <div id="transfer-log"></div>
+      <p class="empty-tip hidden" id="transfer-log-empty">还没有转交记录</p>
+    </section>
   </main>
+
+  <div class="modal-mask hidden" id="preview-mask">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="preview-title">
+      <div class="modal-head">
+        <h3 id="preview-title">转交预演</h3>
+        <button type="button" class="ghost" id="preview-close">关闭</button>
+      </div>
+      <div id="preview-body"></div>
+      <div class="modal-actions">
+        <button type="button" id="preview-confirm">确认执行转交</button>
+        <button type="button" class="ghost" id="preview-cancel">再看看</button>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

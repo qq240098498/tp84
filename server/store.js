@@ -23,6 +23,7 @@ function seedData() {
       { id: 'proj-1002', name: '支付网关', owner: '李文', note: '收单与退款通道', createdAt: '2026-08-28T02:10:00.000Z' },
       { id: 'proj-1003', name: '会员中心', owner: '王凯', note: '账号与权益', createdAt: '2026-08-28T02:20:00.000Z' },
     ],
+    transfers: [],
     deps: [
       { id: 'dep-2001', projectId: 'proj-1001', name: 'spring-boot', version: '2.7.18', license: 'Apache-2.0', owner: '陈晓', status: '在用', note: '基础框架', createdAt: '2026-08-28T03:00:00.000Z', updatedAt: '2026-09-15T06:10:00.000Z' },
       { id: 'dep-2002', projectId: 'proj-1001', name: 'postgresql', version: '42.6.0', license: 'BSD-2-Clause', owner: '陈晓', status: '在用', note: '数据库驱动', createdAt: '2026-08-28T03:02:00.000Z', updatedAt: '2026-09-15T06:12:00.000Z' },
@@ -78,6 +79,36 @@ function normalizeDep(item, fallbackIndex) {
   };
 }
 
+// 把单条转交记录整理成固定结构，缺字段或类型不对的记录直接丢掉
+function normalizeTransfer(item) {
+  const source = item && typeof item === 'object' ? item : {};
+  if (typeof source.id !== 'string' || !source.id) return null;
+  if (typeof source.batchId !== 'string' || !source.batchId) return null;
+  if (typeof source.depId !== 'string' || !source.depId) return null;
+  if (typeof source.fromOwner !== 'string') return null;
+  if (typeof source.toOwner !== 'string') return null;
+  if (typeof source.operator !== 'string') return null;
+  if (typeof source.at !== 'string' || !source.at) return null;
+  const detail = source.depSnapshot && typeof source.depSnapshot === 'object' ? source.depSnapshot : {};
+  return {
+    id: source.id,
+    batchId: source.batchId,
+    depId: source.depId,
+    fromOwner: source.fromOwner.trim(),
+    toOwner: source.toOwner.trim(),
+    operator: source.operator.trim(),
+    at: source.at,
+    reason: typeof source.reason === 'string' ? source.reason.trim() : '',
+    depSnapshot: {
+      id: typeof detail.id === 'string' ? detail.id : source.depId,
+      projectId: typeof detail.projectId === 'string' ? detail.projectId : '',
+      projectName: typeof detail.projectName === 'string' ? detail.projectName.trim() : '',
+      name: typeof detail.name === 'string' ? detail.name.trim() : '',
+      version: typeof detail.version === 'string' ? detail.version.trim() : '',
+    },
+  };
+}
+
 // 整份数据保证 projects 与 deps 结构一致，指向不存在项目的登记一律丢掉
 function normalize(raw) {
   const source = raw && typeof raw === 'object' ? raw : {};
@@ -106,7 +137,15 @@ function normalize(raw) {
         .filter((item) => known.has(item.projectId))
     : [];
 
-  return { projects: dedupedProjects, deps };
+  // 转交记录只追加不改写，按时间先后排好；旧版本数据文件里没有这个字段时按空数组处理
+  const transfers = Array.isArray(source.transfers)
+    ? source.transfers
+        .map(normalizeTransfer)
+        .filter(Boolean)
+        .sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : a.id < b.id ? -1 : 1))
+    : [];
+
+  return { projects: dedupedProjects, deps, transfers };
 }
 
 // 读取数据文件：文件缺失或内容损坏时回落到初始数据并立刻补写
@@ -136,6 +175,7 @@ module.exports = {
   normalize,
   normalizeProject,
   normalizeDep,
+  normalizeTransfer,
   STATUSES,
   UNASSIGNED,
   MAX_NAME_LENGTH,
